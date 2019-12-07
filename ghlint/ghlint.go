@@ -10,8 +10,6 @@ import (
 	"os/exec"
 )
 
-// [{"module":["Analyzers.Graphviz"],"decl":["ppStmt"],"severity":"Suggestion","hint":"Reduce duplication","file":"/home/ashleyis/Development/projects/osdev/radon/src/Analyzers/Graphviz.hs","startLine":102,"startColumn":3,"endLine":102,"endColumn":15,"from":"i <- freshId\nj <- freshId\n(k, ty) <- ppType t\n","to":"Combine with /home/ashleyis/Development/projects/osdev/radon/src/Analyzers/Graphviz.hs:112:3","note":[],"refactorings":"[]"}
-
 type LintMsg struct {
 	Module      []string
 	Decl        []string
