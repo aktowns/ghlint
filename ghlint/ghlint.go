@@ -50,11 +50,13 @@ type GitHubPullRequest struct {
 }
 
 func main() {
-	if len(os.Args) == 2 {
-		log.Fatal("Directory is required")
+	if len(os.Args) == 1 {
+		log.Fatal("location of hlint is required")
 	}
 
-	cmd := exec.Command(os.Args[1], "--no-exit-code", "--json", os.Args[2])
+	path := os.Getenv("INPUT_PATH")
+
+	cmd := exec.Command(os.Args[1], "--no-exit-code", "--json", path)
 	stdoutStderr, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Printf("Running %s failed:\n%s", os.Args[1], stdoutStderr)
@@ -68,13 +70,15 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Printf("found %d hints", len(hints))
+
 	reviewPr(hints)
 }
 
 func reviewPr(hints []LintMsg) {
 	var (
-		token      = os.Getenv("INPUT_TOKEN")
-		event      = os.Getenv("GITHUB_EVENT_PATH")
+		token = os.Getenv("INPUT_TOKEN")
+		event = os.Getenv("GITHUB_EVENT_PATH")
 	)
 
 	fh, err := os.Open(event)
@@ -86,6 +90,10 @@ func reviewPr(hints []LintMsg) {
 	err = json.NewDecoder(fh).Decode(&ghevent)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if ghevent.PullRequest.Number == 0 {
+		log.Fatal("not a pull request, ignoring.")
 	}
 
 	ctx := context.Background()

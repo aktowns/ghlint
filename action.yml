@@ -1,0 +1,13 @@
+name: 'Run hlint on pr'
+description: 'Run hlint and eventually ghc to collect warnings on pr'
+author: 'aktowns'
+inputs: 
+  token:
+    description: 'github token'
+    required: true
+  path:
+    description: 'path of code'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
